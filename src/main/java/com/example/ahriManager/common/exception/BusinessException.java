@@ -1,6 +1,6 @@
-package com.example.ahriManager.common.response.exception;
+package com.example.ahriManager.common.exception;
 
-import com.example.ahriManager.common.response.exception.type.ErrorCode;
+import com.example.ahriManager.common.exception.type.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

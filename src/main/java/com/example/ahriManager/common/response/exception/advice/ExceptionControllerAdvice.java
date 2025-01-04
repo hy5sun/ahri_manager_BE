@@ -1,5 +1,8 @@
-package com.example.ahriManager.common.response.exception;
+package com.example.ahriManager.common.response.exception.advice;
 
+import com.example.ahriManager.common.response.exception.BusinessException;
+import com.example.ahriManager.common.response.exception.type.ErrorCode;
+import com.example.ahriManager.common.response.exception.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

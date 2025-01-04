@@ -1,5 +1,6 @@
 package com.example.ahriManager.common.response.exception;
 
+import com.example.ahriManager.common.response.exception.type.ErrorCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;

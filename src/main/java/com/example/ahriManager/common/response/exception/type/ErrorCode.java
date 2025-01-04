@@ -1,4 +1,4 @@
-package com.example.ahriManager.common.response.exception;
+package com.example.ahriManager.common.response.exception.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

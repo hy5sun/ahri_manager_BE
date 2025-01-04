@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
+    // provider type 불일치
+    WRONG_PROVIDER_TYPE(HttpStatus.BAD_REQUEST.value(), "Bad Request", "잘못된 provider 타입입니다."),
+
     // 잘못된 요청
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "Bad Request", "잘못된 요청입니다."),
     // 잘못된 값 입력

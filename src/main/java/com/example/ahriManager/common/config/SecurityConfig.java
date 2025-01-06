@@ -14,7 +14,8 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/oauth/kakao/login"
+                                "/oauth/kakao/login",
+                                "/oauth/google/login"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

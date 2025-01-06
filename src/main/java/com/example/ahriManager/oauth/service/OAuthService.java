@@ -16,6 +16,7 @@ import static org.springframework.web.reactive.function.BodyInserters.fromFormDa
 public class OAuthService {
     private final static String KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com";
     private final static String KAKAO_API_BASE_URL = "https://kapi.kakao.com";
+    private final static String GOOGLE_AUTH_BASE_URL = "https://accounts.google.com";
 
     private final WebClientFactory webClientFactory;
 
@@ -24,6 +25,15 @@ public class OAuthService {
 
     @Value("${oauth.kakao.redirectURI}")
     private String kakaoRedirectURI;
+
+    @Value("${oauth.google.clientId}")
+    private String googleClientId;
+
+    @Value("${oauth.google.clientPw}")
+    private String googleClientPw;
+
+    @Value("${oauth.google.redirectURI}")
+    private String googleRedirectURI;
 
     public OAuthService(WebClientFactory webClientFactory) {
         this.webClientFactory = webClientFactory;
@@ -63,5 +73,10 @@ public class OAuthService {
                 .retrieve()
                 .bodyToMono(KakaoProfile.class)
                 .block();
+    }
+
+    private String getGoogleLoginUrl() {
+        return GOOGLE_AUTH_BASE_URL + "/o/oauth2/v2/auth?client_id=" + googleClientId
+                + "&redirect_uri=" + googleRedirectURI + "&response_type=code&scope=openid%20profile%20email";
     }
 }

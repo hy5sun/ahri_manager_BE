@@ -2,6 +2,7 @@ package com.example.ahriManager.oauth.service;
 
 import com.example.ahriManager.common.factory.WebClientFactory;
 import com.example.ahriManager.common.type.Provider;
+import com.example.ahriManager.oauth.dto.GoogleProfile;
 import com.example.ahriManager.oauth.dto.KakaoProfile;
 import com.example.ahriManager.oauth.dto.OAuthToken;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ public class OAuthService {
     private final static String KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com";
     private final static String KAKAO_API_BASE_URL = "https://kapi.kakao.com";
     private final static String GOOGLE_AUTH_BASE_URL = "https://accounts.google.com";
+    private final static String GOOGLE_OAUTH_BASE_URL = "https://oauth2.googleapis.com";
+    private final static String GOOGLE_API_BASE_URL = "https://www.googleapis.com";
 
     private final WebClientFactory webClientFactory;
 
@@ -89,5 +92,38 @@ public class OAuthService {
     private String getGoogleLoginUrl() {
         return GOOGLE_AUTH_BASE_URL + "/o/oauth2/v2/auth?client_id=" + googleClientId
                 + "&redirect_uri=" + googleRedirectURI + "&response_type=code&scope=openid%20profile%20email";
+    }
+
+    private String getGoogleAccessToken(String code) {
+        WebClient googleWebClient = webClientFactory.createWebClient(GOOGLE_OAUTH_BASE_URL);
+
+        OAuthToken token = googleWebClient.post()
+                .uri("/token")
+                .body(fromFormData("grant_type", "authorization_code")
+                        .with("client_id", googleClientId)
+                        .with("client_secret", googleClientPw)
+                        .with("redirect_uri", googleRedirectURI)
+                        .with("code", code))
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(OAuthToken.class)
+                .block();
+
+        return token.getAccessToken();
+    }
+
+    public GoogleProfile getGoogleProfile(String code) {
+        String accessToken = getGoogleAccessToken(code);
+
+        WebClient kakaoWebClient = webClientFactory.createWebClient(GOOGLE_API_BASE_URL);
+
+        log.info(accessToken);
+        return kakaoWebClient.get()
+                .uri("/oauth2/v3/userinfo")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(GoogleProfile.class)
+                .block();
     }
 }

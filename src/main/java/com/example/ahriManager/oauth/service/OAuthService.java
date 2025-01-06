@@ -1,6 +1,7 @@
 package com.example.ahriManager.oauth.service;
 
 import com.example.ahriManager.common.factory.WebClientFactory;
+import com.example.ahriManager.common.type.Provider;
 import com.example.ahriManager.oauth.dto.KakaoProfile;
 import com.example.ahriManager.oauth.dto.OAuthToken;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,17 @@ public class OAuthService {
         this.webClientFactory = webClientFactory;
     }
 
-    public String getKakaoLoginUrl() {
+    public String getLoginUrl(String provider) {
+        Provider providerType = Provider.fromType(provider);
+
+        if (providerType.equals(Provider.KAKAO)) {
+            return getKakaoLoginUrl();
+        } else {
+            return getGoogleLoginUrl();
+        }
+    }
+
+    private String getKakaoLoginUrl() {
         return  KAKAO_AUTH_BASE_URL + "/oauth/authorize?client_id=" + kakaoClientId
                 + "&redirect_uri=" + kakaoRedirectURI + "&response_type=code";
     }

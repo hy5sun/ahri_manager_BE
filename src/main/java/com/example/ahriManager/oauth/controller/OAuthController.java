@@ -1,6 +1,8 @@
 package com.example.ahriManager.oauth.controller;
 
 import com.example.ahriManager.common.exception.BusinessException;
+import com.example.ahriManager.common.response.CustomResponse;
+import com.example.ahriManager.oauth.dto.KakaoProfile;
 import com.example.ahriManager.oauth.service.OAuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,11 @@ public class OAuthController {
 
     private final OAuthService oAuthService;
 
-    @GetMapping("/kakao/login")
+    @GetMapping("/{provider}/login")
     @ResponseStatus(HttpStatus.FOUND)
-    public void connectLogin(HttpServletResponse response) {
-        String url = oAuthService.getKakaoLoginUrl();
+    public void connectLogin(@PathVariable("provider") String provider, HttpServletResponse response) {
+        String url = oAuthService.getLoginUrl(provider);
+
         try {
             response.sendRedirect(url);
         } catch (IOException e) {

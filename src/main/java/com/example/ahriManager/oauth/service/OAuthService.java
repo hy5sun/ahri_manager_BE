@@ -5,6 +5,7 @@ import com.example.ahriManager.common.type.ProviderType;
 import com.example.ahriManager.oauth.dto.GoogleProfile;
 import com.example.ahriManager.oauth.dto.KakaoProfile;
 import com.example.ahriManager.oauth.dto.OAuthToken;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class OAuthService {
     private final static String KAKAO_AUTH_BASE_URL = "https://kauth.kakao.com";
@@ -38,10 +40,6 @@ public class OAuthService {
 
     @Value("${oauth.google.redirectURI}")
     private String googleRedirectURI;
-
-    public OAuthService(WebClientFactory webClientFactory) {
-        this.webClientFactory = webClientFactory;
-    }
 
     public String getLoginUrl(String provider) {
         ProviderType providerType = ProviderType.fromType(provider);

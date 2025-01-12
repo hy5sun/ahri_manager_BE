@@ -1,7 +1,7 @@
 package com.example.ahriManager.oauth.service;
 
 import com.example.ahriManager.common.factory.WebClientFactory;
-import com.example.ahriManager.common.type.Provider;
+import com.example.ahriManager.common.type.ProviderType;
 import com.example.ahriManager.oauth.dto.GoogleProfile;
 import com.example.ahriManager.oauth.dto.KakaoProfile;
 import com.example.ahriManager.oauth.dto.OAuthToken;
@@ -44,9 +44,9 @@ public class OAuthService {
     }
 
     public String getLoginUrl(String provider) {
-        Provider providerType = Provider.fromType(provider);
+        ProviderType providerType = ProviderType.fromType(provider);
 
-        if (providerType.equals(Provider.KAKAO)) {
+        if (providerType.equals(ProviderType.KAKAO)) {
             return getKakaoLoginUrl();
         } else {
             return getGoogleLoginUrl();
@@ -117,7 +117,6 @@ public class OAuthService {
 
         WebClient kakaoWebClient = webClientFactory.createWebClient(GOOGLE_API_BASE_URL);
 
-        log.info(accessToken);
         return kakaoWebClient.get()
                 .uri("/oauth2/v3/userinfo")
                 .accept(MediaType.APPLICATION_JSON)

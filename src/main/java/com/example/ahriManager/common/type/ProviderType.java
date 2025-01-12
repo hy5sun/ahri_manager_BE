@@ -11,14 +11,14 @@ import static com.example.ahriManager.common.exception.type.ErrorCode.WRONG_PROV
 
 @Getter
 @AllArgsConstructor
-public enum Provider {
+public enum ProviderType {
     KAKAO("kakao"),
     GOOGLE("google");
 
     private final String value;
 
     @JsonCreator
-    public static Provider fromType(String value) {
+    public static ProviderType fromType(String value) {
         return Arrays.stream(values())
                 .filter(type->type.getValue().equals(value))
                 .findAny()

@@ -2,6 +2,8 @@ package com.example.ahriManager.oauth.service;
 
 import com.example.ahriManager.common.factory.WebClientFactory;
 import com.example.ahriManager.common.type.ProviderType;
+import com.example.ahriManager.member.domain.Member;
+import com.example.ahriManager.member.repository.MemberRepository;
 import com.example.ahriManager.oauth.dto.GoogleProfile;
 import com.example.ahriManager.oauth.dto.KakaoProfile;
 import com.example.ahriManager.oauth.dto.OAuthToken;
@@ -25,6 +27,7 @@ public class OAuthService {
     private final static String GOOGLE_API_BASE_URL = "https://www.googleapis.com";
 
     private final WebClientFactory webClientFactory;
+    private final MemberRepository memberRepository;
 
     @Value("${oauth.kakao.clientId}")
     private String kakaoClientId;
@@ -92,7 +95,7 @@ public class OAuthService {
                 + "&redirect_uri=" + googleRedirectURI + "&response_type=code&scope=openid%20profile%20email";
     }
 
-    private String getGoogleAccessToken(String code) {
+    private String getGoogleAccessToken(String authCode) {
         WebClient googleWebClient = webClientFactory.createWebClient(GOOGLE_OAUTH_BASE_URL);
 
         OAuthToken token = googleWebClient.post()
@@ -101,7 +104,7 @@ public class OAuthService {
                         .with("client_id", googleClientId)
                         .with("client_secret", googleClientPw)
                         .with("redirect_uri", googleRedirectURI)
-                        .with("code", code))
+                        .with("code", authCode))
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(OAuthToken.class)
@@ -110,8 +113,8 @@ public class OAuthService {
         return token.getAccessToken();
     }
 
-    public GoogleProfile getGoogleProfile(String code) {
-        String accessToken = getGoogleAccessToken(code);
+    public GoogleProfile getGoogleProfile(String authCode) {
+        String accessToken = getGoogleAccessToken(authCode);
 
         WebClient kakaoWebClient = webClientFactory.createWebClient(GOOGLE_API_BASE_URL);
 
@@ -122,5 +125,16 @@ public class OAuthService {
                 .retrieve()
                 .bodyToMono(GoogleProfile.class)
                 .block();
+    }
+
+    private void saveSocialAccount(String email, ProviderType providerType) {
+        Member member = Member.builder()
+                .email(email)
+                .provider(providerType)
+                .nickname("")
+                .build();
+
+        memberRepository.save(member);
+        log.info(member.getEmail() + ": 회원 저장");
     }
 }

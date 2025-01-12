@@ -129,6 +129,18 @@ public class OAuthService {
                 .block();
     }
 
+    public void getProfile(String provider, String authCode) {
+        ProviderType providerType = ProviderType.fromType(provider);
+
+        String email = switch (providerType) {
+            case KAKAO -> getKakaoProfile(authCode).getKakaoAccount().getEmail();
+            case GOOGLE -> getGoogleProfile(authCode).getEmail();
+            // default -> 이전에 provider type에 대한 검증을 진행하기 때문에 생략함
+        };
+
+        findMember(email, providerType);
+    }
+
     private void saveSocialAccount(String email, ProviderType providerType) {
         Member member = Member.builder()
                 .email(email)

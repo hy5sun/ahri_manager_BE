@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class GoogleProfile {
-    @JsonProperty("sub")
-    private String socialId;
-
     @JsonProperty("email")
     private String email;
 }

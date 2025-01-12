@@ -1,5 +1,6 @@
 package com.example.ahriManager.oauth.service;
 
+import com.example.ahriManager.common.exception.BusinessException;
 import com.example.ahriManager.common.factory.WebClientFactory;
 import com.example.ahriManager.common.type.ProviderType;
 import com.example.ahriManager.member.domain.Member;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import static com.example.ahriManager.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Service
@@ -136,5 +138,13 @@ public class OAuthService {
 
         memberRepository.save(member);
         log.info(member.getEmail() + ": 회원 저장");
+    }
+
+    private void findMember(String email, ProviderType provider) {
+        memberRepository.findByEmailAndProvider(email, provider)
+                .orElseGet(()-> {
+                    saveSocialAccount(email, provider);
+                    throw new BusinessException(MEMBER_NOT_FOUND);
+                });
     }
 }

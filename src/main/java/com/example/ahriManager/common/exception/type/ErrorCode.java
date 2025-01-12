@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     // provider type 불일치
     WRONG_PROVIDER_TYPE(HttpStatus.BAD_REQUEST.value(), "Bad Request", "잘못된 provider 타입입니다."),
+    // 회원가입된 소셜 계정이 아닌 경우
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Not Found", "존재하지 않는 회원입니다."),
 
     // 잘못된 요청
     BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), "Bad Request", "잘못된 요청입니다."),

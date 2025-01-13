@@ -27,11 +27,15 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private ProviderType provider;
 
+    @Column(nullable = false)
+    private Boolean emailAgreement;
+
     @Builder
-    public Member(String nickname, String email, ProviderType provider, Boolean emailAgreement) {
+    public Member(String nickname, String email, ProviderType provider) {
         this.nickname = nickname;
         this.email = email;
         this.provider = provider;
+        this.emailAgreement = true;
     }
 
     public void updateNickname(String nickname) {

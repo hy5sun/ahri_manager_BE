@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.example.ahriManager.common.exception.type.ErrorCode.MEMBER_NOT_FOUND;
+import static com.example.ahriManager.common.exception.type.ErrorCode.*;
 import static org.springframework.web.reactive.function.BodyInserters.fromFormData;
 
 @Service
@@ -138,7 +138,8 @@ public class OAuthService {
             // default -> 이전에 provider type에 대한 검증을 진행하기 때문에 생략함
         };
 
-        findMember(email, providerType);
+        Member member = findMember(email, providerType);
+        checkNicknameSet(member);
     }
 
     private void saveSocialAccount(String email, ProviderType providerType) {
@@ -152,11 +153,17 @@ public class OAuthService {
         log.info(member.getEmail() + ": 회원 저장");
     }
 
-    private void findMember(String email, ProviderType provider) {
-        memberRepository.findByEmailAndProvider(email, provider)
+    private Member findMember(String email, ProviderType provider) {
+        return memberRepository.findByEmailAndProvider(email, provider)
                 .orElseGet(()-> {
                     saveSocialAccount(email, provider);
                     throw new BusinessException(MEMBER_NOT_FOUND);
                 });
+    }
+
+    private void checkNicknameSet(Member member) {
+        if (member.getNickname().isEmpty()) {
+            throw new BusinessException(NICKNAME_NOT_SET);
+        }
     }
 }
